@@ -1,0 +1,16 @@
+*.png
+*.jpeg
+*.jpg
+*.gif
+static
+uploads
+*.tif
+*.tiff
+*.svs
+*.ndpi
+*.bmp
+*.npy
+*.dat
+*.json
+*.ipynb
+*.pth

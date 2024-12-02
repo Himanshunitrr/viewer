@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>WSI Viewer</title>
+    <script src="https://openseadragon.github.io/openseadragon/openseadragon.min.js"></script>
+    <link rel="stylesheet" href="https://openseadragon.github.io/openseadragon/openseadragon.min.css" />
+</head>
+<body>
+    <h1>View Whole Slide Image</h1>
+    <div id="openseadragon1" style="position: relative; width: 100%; height: 800px">
+        <div id="osd-viewer" style="width: 100%; height: 100%"></div>
+        <canvas
+            id="annotation-canvas"
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"
+        ></canvas>
+    </div>
+    <script>
+        var viewer = OpenSeadragon({
+            id: "osd-viewer",
+            prefixUrl: "https://openseadragon.github.io/openseadragon/images/",
+            tileSources: {
+                type: "image",
+                width: {{ width }},
+                height: {{ height }},
+                tileSize: 256,
+                getTileUrl: function (level, x, y) {
+                    return `/tile/${level}/${x}/${y}.jpeg`;
+                },
+            },
+            showNavigator: true,
+            defaultZoomLevel: 0,
+            minZoomLevel: 0,
+            maxZoomLevel: 8,
+        });
+        let isReloaded = false;
+        async function checkProcessingStatus() {
+            try {
+                const response = await fetch('/status');
+                const statusData = await response.json();
+                
+                if (statusData.status === 'completed' && !isReloaded) {
+                    // alert("Processing complete! Loading the processed slide...");
+                    isReloaded = true;
+                    location.reload(); // Reload page to display the processed WSI
+                } else if (statusData.status === 'failed') {
+                    alert("Processing failed. Please try again.");
+                } else if (!statusData.stop_polling) {
+                    setTimeout(checkProcessingStatus, 50000); // Check every 50 seconds
+                }
+            } catch (error) {
+                console.error("Error checking status:", error);
+            }
+        }
+
+        window.onload = function () {
+            checkProcessingStatus();
+        };
+    </script>
+</body>
+</html>

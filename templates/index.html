@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WSI Viewer</title>
+</head>
+<body>
+    <h1>Select a Whole Slide Image</h1>
+    <form action="/select" method="post">
+        <label for="filepath">WSI File Path:</label>
+        <input type="text" id="filepath" name="filepath" placeholder="Enter the path to the WSI file" style="width: 300px;" required>
+        <input type="submit" value="Load Image">
+    </form>
+</body>
+</html>
